@@ -1,0 +1,166 @@
+✔️ Node.js Tek Thread’dir Ne Demek?
+
+Thread = İş parçacığı
+Bir program içinde aynı anda yapılabilen küçük bağımsız işler gibi düşün.
+
+🔥 Node.js’in ana çalışma yeri sadece 1 tanedir.
+
+Yani Node.js’te:
+
+Kodların işlendiği yer tek bir ana thread’dir.
+
+Bu thread içinde Event Loop koşar.
+
+JavaScript kodların senkron çalışan kısımları hep bu tek thread üzerinde çalışır.
+
+👉 Yani Node.js aynı anda iki JavaScript kodunu paralel olarak çalıştıramaz (tek çekirdek gibi düşün).
+
+✔️ Ama Node.js neden hızlı o zaman?
+
+Çünkü Node.js’in mantığı şu:
+
+✨ “Ağır işleri ben yapmam, OS’e gönderirim. Ben beklemem, sen iş bitince bana haber ver.”
+
+Node.js’in tek thread olması:
+
+❌ CPU’ya çok yük bindiren işler için kötü
+✔️ I/O (dosya okuma, veritabanı, network) gibi beklemeli işler için çok hızlı
+
+
+✔️ Bir benzetmeyle açıklayalım
+
+📌 Bir kasiyer (Node.js) düşün.
+
+Kasiyer tek kişi (tek thread)
+
+Sırayla iş yapıyor.
+
+Ama:
+
+Ürünü tartması gerekecek → bunu elemanlara söylüyor (OS thread pool)
+
+Kasiyer tartının başında beklemiyor.
+
+Tartıdan sonuç gelince kasiyer işleme devam ediyor.
+
+Yani:
+
+Kasiyer (Node thread) tek
+Tartı görevlileri (OS’deki worker threadler) çok
+
+✔️ Teknik olarak nasıl?
+
+Node.js:
+
+JS kodlarını tek bir thread üzerinde çalıştırır.
+
+Ama I/O işlemlerini libuv aracılığıyla arka plandaki thread pool’a gönderir.
+
+
+JavaScript kodları → Single Thread
+Ağır işlemler → Worker Threads / OS Thread Pool
+
+
+✔️ Özet (çok net şekilde)
+Node.js’in tek thread olması demek:
+
+JavaScript çalıştıran yer tek bir yerde koşar.
+
+Aynı anda iki JS komutu paralel çalışamaz.
+
+Ama Node.js beklerken boş durmaz → bekleme işlerini OS’e atar.
+
+Sonuç geldiğinde Event Loop bu sonucu işleyip callback’i çalıştırır.
+
+✔️ En net cümle
+
+Node.js tek thread’dir = JavaScript kodların tek bir ana thread üzerinde sırayla çalışır.
+Ama I/O işlemleri arka planda başka threadlerde yapılabilir.
+
+✔️ Ana Çalışma Yeri (Main Thread) Tam Olarak Nedir?
+👉 Ana çalışma yeri = Node.js’in JavaScript kodlarını işlediği tek işlemci hattı.
+
+Bu mecazi bir yer, fiziksel bir lokasyon değil.
+Bir dosya, klasör, ekran veya RAM’de bir kutu değil.
+
+Bu, işlemcinin içindeki tek bir talimat yürütme hattı demektir.
+
+
+✔️ Peki bu “yer” gerçekten nerede?
+Bu yer CPU’nun içinde, işletim sisteminin oluşturduğu bir “thread” olarak bulunur.
+
+Bunu şöyle düşün:
+
+Node.js çalıştığında işletim sistemi Node için bir thread oluşturur.
+
+Bu thread CPU üzerinde çalışır.
+
+Node.js’in JavaScript motoru (V8) bu thread içinde kodları yürütür.
+
+🔥 Kısaca:
+
+Main thread = CPU üzerinde Node.js’e ayrılmış tek bir yürütme hattıdır.
+
+
+✔️ Bu “yer” gözle görülebilir mi?
+
+❌ Hayır.
+Bu bir:
+
+dosya
+
+klasör
+
+program penceresi
+
+RAM’de görünür bir blok
+
+değil.
+
+Bu, tamamen işletim sistemi tarafından CPU üzerinde oluşturulan soyut bir yürütme ortamıdır.
+✔️ Peki nasıl oluyor da sadece 1 tane oluyor?
+
+Çünkü Node.js başlatılırken şöyle çalışır:
+
+İşletim sistemi Node.js için 1 adet thread oluşturur
+
+V8 motoru bu thread’in içinde çalışır
+
+JavaScript kodlarının tamamı bu thread içinde işlenir
+
+Event Loop bu thread içinde döner
+
+Dolayısıyla:
+
+🔒 Tüm JS kodları tek sırada, tek akışta çalışır.
+
+✔️ Bunu kafanda somutlaştırman için en doğru benzetme:
+📌 Main Thread = Tek bir şeritli yol
+
+Arabalar (JS komutları) sırayla gider, aynı anda iki araba geçemez.
+
+✔️ Peki diğer işlere ne oluyor?
+
+Node.js:
+
+Dosya okuma
+
+Veritabanı
+
+Network istekleri
+
+Zamanlayıcılar
+
+gibi ağır veya beklemeli işleri main thread’de yapmaz.
+
+Bunları şu tarafa gönderir:
+
+👉 libuv thread pool (arka plan thread’leri)
+👉 OS kernel’i (system calls)
+
+Ama JavaScript kodları her zaman tek yerde çalışır.
+
+✔️ Özet (çok net)
+**Ana çalışma yeri = Node.js’in JavaScript’i işlediği tek CPU thread’i.
+
+Bu fiziksel bir yer değil, CPU içinde oluşturulmuş bir yürütme akışıdır.**

@@ -1,0 +1,93 @@
+✔️ Thread Ne Demek? (En Basit Tanım)
+
+Thread = işlemcinin aynı anda çalıştırdığı bir iş akışıdır.
+
+Bir bilgisayarın içinde işler threadler üzerinden yürür.
+
+✔️ Thread’i günlük hayattan düşün
+🔧 Bir işçi = 1 thread
+
+Bir işçi tek seferde tek işi yapabilir.
+
+Aynı anda iki işe yetişemez.
+
+Bir işi bitirip sıradaki işe geçer.
+
+Bilgisayarda da:
+
+1 thread = aynı anda işleyebildiği 1 komut akışı
+
+✔️ Thread tam olarak nerede?
+
+Thread fiziksel bir şey değildir.
+
+CPU üzerinde işletim sistemi tarafından oluşturulan bir çalışma hattıdır.
+
+Böyle düşün:
+
+📌 CPU’nun içinde “talimat yürütme” yapan bir şerit
+📌 Bu şeritte komutlar sırayla akar
+
+✔️ Thread’in görevi ne?
+
+Komutları sırayla CPU’da çalıştırmak
+
+Thread başlar
+
+Talimatları sırayla yürütür
+
+Bitince bir sonraki talimata geçer
+
+✔️ Çok net bir özet
+Thread = CPU’nun aynı anda yürüttüğü bir iş akışı.
+
+✔️ Daha da özet
+
+Bir uygulama çalışır → OS onun için bir process oluşturur
+
+Bu proses içinde bir veya birden fazla thread oluşturulur
+
+Her thread komutları bir şerit gibi tek tek çalıştırır
+
+✔️ Neden önemli?
+
+Node.js tek thread olduğu için aynı anda 2 JS kodu çalıştıramaz
+
+Ama başka thread’leri arka planda I/O işleri için kullanır
+
+Java, Python, C++ gibi diller birden fazla thread kullanabilir
+
+✔️ Senin için en iyi benzetme
+🧵 THREAD = CPU içinde akan tek şeritli yol
+🚗 KOMUT = o yolda giden araba
+🏭 PROCESS = o yolun bulunduğu fabrika
+
+
+
+✔️ Node.js çalıştığında
+
+Bu yer CPU’nun içinde, işletim sisteminin oluşturduğu bir “thread” olarak bulunur.
+
+Bunu şöyle düşün:
+
+Node.js çalıştığında işletim sistemi Node için bir thread oluşturur.
+
+Bu thread CPU üzerinde çalışır.
+
+Node.js’in JavaScript motoru (V8) bu thread içinde kodları yürütür.
+
+🔥 Kısaca:
+
+Main thread = CPU üzerinde Node.js’e ayrılmış tek bir yürütme hattıdır.
+
+✔️ Peki nasıl oluyor da sadece 1 tane oluyor?
+
+Çünkü Node.js başlatılırken şöyle çalışır:
+
+İşletim sistemi Node.js için 1 adet thread oluşturur
+
+V8 motoru bu thread’in içinde çalışır
+
+JavaScript kodlarının tamamı bu thread içinde işlenir
+
+Event Loop bu thread içinde döner
