@@ -1,3 +1,121 @@
+🚀 libuv NEDİR? (En basit tanım)
+
+libuv = Node.js’in asenkron çalışmasını sağlayan C kütüphanesidir.
+Yani:
+
+✔ Event Loop
+✔ Thread pool
+✔ Asenkron I/O
+✔ Timer’lar
+✔ Network
+✔ File system işlemleri
+
+gibi bütün arka plandaki ağır işleri yöneten altyapıdır.
+
+Node.js JavaScript yazdığın yüzüdür,
+libuv ise arkadaki motorudur.
+
+
+🔥 Bir cümleyle:
+
+👉 JavaScript tek thread, ama Node.js hızlı ve asenkron çalışıyorsa, bunun sebebi libuv’dir.
+
+
+🧱 libuv ne işe yarar?
+
+Node’un yaptığı pek çok olay JavaScript değil, libuv ile yapılır:
+
+İşlem	            JS mi yapıyor?	            libuv mi?
+Event Loop	            ❌                          	✔
+Dosya okuma         	❌	                        ✔ (OS ile konuşur)
+Ağ istekleri        	❌	                        ✔
+setTimeout	            ❌                           ✔
+Thread pool	            ❌                          	✔
+TCP/UDP soket	        ❌                          	✔
+DNS lookup	            ❌	                        ✔
+
+JavaScript sadece callback'i yazdığın yerdir.
+Derin işlerin hepsi libuv’de.
+
+🔧 libuv nasıl çalışıyor?
+
+libuv iki sistemi kullanır:
+
+
+🌀 1) Event Loop
+
+JavaScript’in yaptığı işler bittikten sonra libuv bir kuyruğa bakar:
+
+Timer’lar
+
+I/O tamamlanmış işler
+
+setImmediate
+
+close callbacks
+
+Bu kuyruğu dönen yapıya event loop deriz.
+
+Node.js'in ünlü "tek thread ama asenkron" yapısı tamamen buradan gelir.
+
+🔧 2) Thread Pool
+
+Bazı işler gerçekten CPU veya dosya beklemesi gerektirir:
+
+Ağır dosya işlemleri
+
+DNS lookup
+
+Crypto hashing
+
+Compression
+
+Bu işleri libuv kendi oluşturduğu 4 thread'lik thread pool’a atar.
+(İstersek 128’e çıkarabiliriz.)
+
+Bu thread'ler işleri yapar → Bitince event loop'a “callback hazır” diye haber verir.
+
+📦 Örnek: fs.readFile neden asenkron?
+
+Çünkü:
+
+JS kodu fs.readFile() der
+
+libuv thread pool’a işi atar
+
+Thread dosyayı okur
+
+İş bitince event loop’a “hazır” der
+
+Event loop callback’i çalıştırır
+
+Sen sadece callback yazarsın ama arka planda libuv ile OS konuşur.
+
+🛠 libuv Node içinde değil JavaScript dışında yazılmıştır
+
+C ile yazılmıştır
+
+Unix, Linux, macOS, Windows ile aynı API üzerinden konuşur
+
+Node.js, Python, Rust, Julia gibi başka diller de kullanabilir (sadece Node’a özel değil)
+
+Yani JavaScript sadece üstteki ince kabuktur.
+
+🏎 Kısaca özet (çok net)
+
+Node.js = JavaScript + libuv
+
+JavaScript → kodu yazdığın yer
+
+libuv → arkadaki tüm ağır işleri yapan motor
+
+JavaScript tek thread → libuv çok thread
+JavaScript yavaş → libuv OS seviyesinde hızlı işleri yapar
+JavaScript I/O yapamaz → libuv yapar
+
+
+
+
 🏊‍♂️ THREAD POOL NE DEMEK?
 ✔ Thread Pool = Bir grup hazır işçi
 

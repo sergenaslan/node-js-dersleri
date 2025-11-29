@@ -1,0 +1,30 @@
+📦 ÖRNEK (Aynı anda çalışıyormuş gibi görünen Node.js kodu)
+
+js
+console.log("1");
+
+setTimeout(() => console.log("2"), 2000);
+
+console.log("3");
+
+cıktı
+1
+3
+2
+
+Neden?
+
+JS “1” yazar
+
+setTimeout’ı libuv’a verir, JS devam eder
+
+JS “3” yazar
+
+libuv 2 saniye sonra callback’i sıraya koyar
+
+JS callback’i çalıştırır → “2” yazar
+
+JavaScript sadece 1 thread’de çalıştı,
+ama biz “aynı anda işler oluyormuş” gibi gördük.
+
+Bunun sebebi tamamen libuv.

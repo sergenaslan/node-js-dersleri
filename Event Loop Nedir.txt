@@ -1,0 +1,117 @@
+🚀 Şimdi gelelim EVENT LOOP’a
+
+Bu konu Node’un beynidir.
+Bunu anlarsan bütün Node.js’i anlamış olursun.
+
+Aşırı net şekilde anlatıyorum:
+
+🧠 EVENT LOOP NEDİR?
+
+Event Loop = JavaScript kodu bittiğinde, libuv tarafından hazır edilen callback’leri sırayla çalıştıran mekanizmadır.
+
+İyi bir tanım:
+
+👉 “Asenkron işler bittiğinde callback’leri çalıştırmaya yarayan bir döngüdür.”
+
+Döngü derken bildiğin while(true) benzeri bir döngü.
+
+🔥 Event Loop neyi bekler?
+
+Timer'lar (setTimeout, setInterval) → süresi doldu mu?
+
+I/O işlemleri (dosya okuma, network vs.) → bitti mi?
+
+setImmediate → hazır mı?
+
+Mikro görevler (Promise.then, process.nextTick)
+
+Bunlar hazır olduğunda callback kuyruğuna atılır.
+
+🚚 CALLBACK KUYRUĞU (Callback Queue)
+
+Node.js bir işlemi bitirdiğinde (ör: dosya okuma), sonuç şöyle hazırlanır:
+
+callback(err, data)
+
+
+Ve bu callback callback queue denilen kuyruğa eklenir.
+
+Event loop’un görevi:
+
+➡️ Kuyruğa bak
+➡️ Sıradaki callback’i al
+➡️ Tek thread üzerinde çalıştır
+
+Bitti.
+
+Node.js’in asenkron gücünün tam merkezi etkinliği budur.
+
+🔄 Şimdi tüm süreç adım adım, çok net:
+1️⃣ JavaScript kodu çalışmaya başlar
+
+Sen şöyle yazarsın:
+
+fs.readFile("a.txt", (err, data) => {
+  console.log(data);
+});
+
+
+JS bunu libuv’a verir.
+
+2️⃣ libuv dosyayı okumayı başlatır
+
+libuv → OS’ye sorar:
+
+“Bu dosyanın içeriğini ver."
+
+JavaScript beklemez, kod çalışmaya devam eder.
+
+3️⃣ İşletim sistemi dosyayı bitirir
+
+OS dosyayı okur → libuv’a teslim eder:
+
+Hata varsa err
+
+Dosya içeriği varsa data
+
+4️⃣ libuv callback’i “hazır çağrılacak” diye işaretler
+
+Ama hemen koşturmadan önce queue'ya atar.
+
+callbackQueue.push(callback)
+
+5️⃣ Event Loop kuyruğa bakar
+
+Eğer JS’in çalıştırdığı sync kod bittiyse:
+
+Kuyruğun başındaki callback alınır
+
+JavaScript engine’e verilir
+
+6️⃣ JavaScript bu callback'i tek thread’de çalıştırır
+
+Ör:
+
+console.log(data)
+
+🧩 NEDEN CALLBACK HEMEN ÇALIŞMIYOR?
+
+Çünkü:
+JavaScript tek thread
+Event loop sıraya göre çalıştırmak zorunda
+
+Bu sayede:
+
+✔ CPU tıkanmaz
+✔ Node.js yüksek performans verir
+✔ I/O beklerken JS boşa zaman kaybetmez
+
+🎯 Son derece net ÖZET
+
+Event Loop = libuv tarafından hazırlanan callback’leri sırayla çalıştıran döngü.
+
+Callback Queue = çalışmaya hazır callback’lerin sıraya toplandığı yer.
+
+Node.js = JavaScript + libuv + OS
+
+

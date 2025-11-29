@@ -350,3 +350,15 @@ Yönetici bunu işçinin önüne koyar
 İşçi yakar ve biter
 
 Yani beynimiz bu modeli zaten doğal olarak böyle çalıştırıyor, bu yüzden benzetme çok oturuyor.
+
+
+-------11111111111111111111111111112----------------
+İstersen bir sonraki mesajda:
+
+Event loop’u faz faz (timers, pending, poll, check vs. mantığıyla) anlatayım,
+
+ardından da ufak bir Node dosyası (index.js) üzerinden, setTimeout, fs.readFile, for döngüsü üçlüsünün sırayla nasıl çalıştığını gösterelim.
+
+Hazırsan ben direkt event loop’a gömülerek devam ederim 💪
+
+-------11111111111111111111111111112----------------

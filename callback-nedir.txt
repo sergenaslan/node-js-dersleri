@@ -1,0 +1,181 @@
+/*
+Callback Nedir? (En basit tanım)
+
+Callback = Bir fonksiyona, daha sonra çalıştırması için verilen başka bir fonksiyondur. o fonksiyon işini bitirdiğinde senin verdiğin fonksiyonu çalıştırır.
+
+➡️ “Kardeşim bu işi yap, bitince şu fonksiyonu çalıştır.” demektir.
+
+*/
+
+/* EN BASİT ÖRNEK */
+function cayDemle(text, callbackFunction){
+    console.log(text);
+    callbackFunction();
+}
+
+cayDemle('ÇAY DEMLENİYOR',function(){
+    console.log('çay demlendi dağıtmaya başlayabilirsin')
+})
+
+/* 
+📦 Callback Neden Var?
+
+    Çünkü Node.js asenkron çalışır.
+
+    Dosya okursun → hemen sonuç gelmez
+
+    API isteği atarsın → hemen sonuç gelmez
+
+    Database’e bağlanırsın → hemen sonuç gelmez
+
+    Bu işlemler zaman aldığı için Node şunu der:
+
+    “Ben burada beklemeyeyim, sen bana bir callback ver. İş bitince onu çalıştırayım.”
+
+import fs from "fs";
+
+fs.readFile("test.txt", "utf8", (err, data) => {
+  if (err) return console.log("Hata:", err);
+
+  console.log("Dosya içeriği:", data);
+}); 
+ açıklaması test.txt dosyasını okuyayım okumam bittiğinde parametre olarak verdiğin ikinci fonksiyonu çalıştırayım 
+
+ */
+/* 
+🎯 Callback'lerin olayı ne?
+
+✔️ İş bitince callback çalıştır.
+✔️ Kodun kilitlenmesini engelle
+✔️ CPU beklerken diğer işler devam eder
+✔️ Node.js event loop ile mükemmel uyumludur
+
+ node.js örneği 
+
+ fs.readFile("data.txt", "utf8", function (err, data) {
+  console.log("Callback çalıştı", data);
+});
+
+
+fs.readFile’ın yaptığı şey:
+
+Dosyayı okumaya başlar
+
+Okuyunca senin verdiğin fonksiyonu (callback’i) çağırır
+
+Burada callback çalıştı demek =
+📌 “Dosya okuma bitti ve ben şimdi senin verdiğin ikinci fonksiyonu çalıştırdım.”
+
+🧠 SORU:
+
+(err, data) parametrelerini kim, nasıl, ne zaman veriyor?
+
+Cevap:
+👉 fs.readFile’ın kendi içindeki C/C++ tabanlı libuv → Node.js binding sistemi veriyor.
+Sen değil.
+
+🔥 Adım Adım ANLATIM
+1) Sen callback’i Node’a veriyorsun
+
+Kodda sen sadece şunu yapıyorsun:
+
+fs.readFile("test.txt", "utf8", callbackFonksiyonu);
+
+
+Burada üçüncü parametre olarak verdiğin fonksiyon:
+
+(err, data) => { ... }
+
+Node bu fonksiyonu kaydediyor.
+
+
+2) Node.js → libuv → OS dosya okuması başlatır
+
+fs.readFile şunu yapıyor:
+
+Dosyayı okumayı işletim sistemine söylüyor
+
+İşletim sistemi hemen cevap vermez (I/O yavaş)
+
+Node.js iş tamamlanıncaya kadar beklemez, diğer işlere devam eder
+
+Ancak Node.js, callback fonksiyonunu şu şekilde kaydeder:
+
+“Bu dosya okuma işi tamamlanınca şu callback’i çalıştıracağım.”
+
+3) İşletim sistemi dosyayı okur → sonuç oluşturur
+
+OS dosyayı okur ve Node'a iki şey gönderir:
+
+Bir hata olduysa err
+
+Dosya içeriği varsa data
+
+Yani data işletim sisteminden gelir.
+
+Node.js tam olarak şunu alır:
+
+err = null (veya error objesi)
+data = "dosyanın içeriği..."
+
+4) libuv Event Loop → Callback Queue'ya sonucu koyar
+
+İş bittiğinde libuv şunu yapar:
+
+“Tamam, iş bitti. Bu callback’i err ve data ile birlikte kuyrukta çalıştır.”
+
+Yani event loop şunu görür:
+
+callback(err, data)
+
+5) Event Loop → callback’i çalıştırır
+
+En sonunda Node.js event loop şu satırı işletir:
+
+callbackFonksiyonu(err, data);
+
+
+İşte bu anda callback’e parametreler geçirilmiş olur.
+
+🔥 SONUÇ OLARAK
+
+err, data parametrelerini sen vermezsin.
+fs.readFile’ın iç yapısı verir.
+
+Sırasıyla:
+
+Sen callback’i verirsin
+
+Node.js dosya okuma işini başlatır
+
+İş bitince OS → libuv → Node’a sonuçları yollar
+
+Node.js callback’i şu şekilde çağırır:
+
+callback(err, data);
+
+🔬 Bunu Gösterdiğim Basit Simülasyon
+
+Aşağıdaki kodda her şeyi Node'un yaptığı gibi elle simüle ediyorum:
+
+function fakeReadFile(callback) {
+  setTimeout(() => {
+    const err = null;  // hata yok
+    const data = "Dosya içeriği burada"; 
+    callback(err, data); // Node’un yaptığı şey
+  }, 1000);
+}
+
+fakeReadFile((err, data) => {
+  console.log("Gelen err:", err);
+  console.log("Gelen data:", data);
+});
+
+
+ÇIKTI:
+
+Gelen err: null
+Gelen data: Dosya içeriği burada
+
+
+Node tam olarak böyle yapıyor fakat daha derin, C++ + libuv + event loop yapılarını kullanıyor.
