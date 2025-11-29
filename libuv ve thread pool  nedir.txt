@@ -1,0 +1,93 @@
+🏊‍♂️ THREAD POOL NE DEMEK?
+✔ Thread Pool = Bir grup hazır işçi
+
+Bunlar bekliyor
+
+İş gelince hemen işe dalıyorlar
+
+İş bitince geri gelip sıraya giriyorlar
+
+Yeniden işe hazır oluyorlar
+
+🔥 Tanım:
+
+Thread pool, belirli sayıda thread’in (işçinin) sürekli hazır beklediği ve gelen işleri çalıştırdığı bir havuzdur.
+
+🏭 BENZETME (Ful net, nokta atışı)
+🧱 Core = Sobanın kendisi
+👷‍♂️ Thread = Sobaya odun atan işçi
+👷‍♂️👷‍♂️👷‍♂️ Thread Pool = Sobanın yanında bekleyen 4 kişilik hazır işçi ekibi
+
+Bu ekip:
+
+Sürekli “iş var mı?” diye bekler
+
+İş gelince hemen bir işçi gidip yapar
+
+Bitince havuza geri döner
+
+Yeni iş gelince başka işçi gider
+
+Her iş için yeni işçi oluşturulmaz
+
+
+🟢 Neden thread pool kullanılıyor?
+
+Çünkü:
+
+❌ Her iş geldiğinde yeni işçi (thread) oluşturmak pahalı
+✔ 4–8 tane hazır işçi tutmak çok daha hızlı
+
+Kısaca:
+
+Thread oluşturmak pahalıdır.
+Thread pool hızlıdır.
+
+
+🟧 NODE.JS’TE THREAD POOL
+
+Node.js’in içinde libuv vardır.
+libuv’nin içinde de 4 thread’lik bir thread pool vardır.
+
+Bu 4 işçi:
+
+Dosya okuma/yazma
+
+Şifreleme
+
+Sıkıştırma
+
+DNS
+
+Ağır CPU işleri
+
+gibi işleri yapar.
+
+Bu yüzden Node.js tek thread görünse de:
+
+✔ Arkada 4 gizli işçisi vardır = Thread Pool
+🟦 AKLINDA KALACAK TEK CÜMLE
+🧵 Thread = 1 işçi
+🧵🧵🧵🧵 Thread pool = Hazır bekleyen işçi ekibi
+🔥 Core = Sobanın kendisi
+🏭 CPU = Bütün ev
+
+
+Küçük bir örnek:
+
+fs.readFile("abc.txt", () => {
+  console.log("bitti");
+});
+
+
+Burada:
+
+JS thread → işi libuv'ye yollar
+
+libuv → thread pool’daki 4 işçiden birine verir
+
+İşçi dosyayı okur
+
+Bitince event loop’a "bitti" der
+
+JS thread callback’i çalıştırır

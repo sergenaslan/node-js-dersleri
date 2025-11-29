@@ -1,0 +1,12 @@
+🧠 CPU CORE NEDİR?
+
+Core = işlemcinin içindeki fiziksel beyin.
+
+Gerçek hesaplamayı yapan yer
+
+Komutları çalıştıran fiziksel devre
+
+Her core tamamen bağımsız çalışır
+
+🟢 Core = fabrikadaki gerçek üretim bandı
+(çelikten yapılmış, fiziksel, somut)

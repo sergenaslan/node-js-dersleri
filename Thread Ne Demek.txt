@@ -1,0 +1,108 @@
+🧵 THREAD NE DEMEK?
+
+Thread = CPU’nun bir işi yürütürken kullandığı komut akışını cpu core yaptıran işcidir.
+Bir thread, işlemcinin “şimdi şu komutu çalıştır, sonra bunu çalıştır” diye takip ettiği yol.
+
+🔧 Basit tanım:
+
+Thread = çalışan işçi
+
+Process = fabrikanın kendisi
+
+Bir fabrikada kaç tane işçi varsa, aynı anda o kadar iş yapabilir.
+
+🧠 CPU → CORE → THREAD ilişkisi
+
+✔ CPU (işlemci): Kocaman fabrika
+✔ Core (çekirdek): Fabrikanın bağımsız çalışan bölümü
+✔ Thread: O bölümdeki işçi
+
+Örnek:
+Senin Macbook’ta 2 fiziksel core → Hyper-Threading ile 4 thread vardır.
+
+Yani her core 2 işçiye bölünmüş gibi çalışır.
+
+🧵 THREAD NE İŞE YARAR?
+
+Thread şu işe yarar:
+
+Kod satırlarını sırayla çalıştırır
+
+Aynı anda birden fazla işi eşzamanlı yapmanı sağlar (multi-thread)
+
+İşlerin CPU tarafından yürütüldüğü hattır
+
+💡 Node.js neden tek thread?
+
+Node.js mimarisi şöyle:
+
+✔ JavaScript kodunu çalıştıran kısım → TEK THREAD
+
+Bu thread’e Main Thread veya Event Loop Thread denir.
+
+Bu thread:
+
+JS kodunu yürütür
+
+Event loop’u yönetir
+
+Callback’leri sıraya koyar
+
+✔ Ama ağır işler?
+
+Node.js bu işleri tek thread’e yüklemiyor.
+Arka tarafta libuv vardır.
+
+libuv’nin thread pool’u = 4 tane gizli thread
+Bu thread’ler:
+
+dosya okuma/yazma
+
+şifreleme
+
+DNS
+
+sıkıştırma
+
+CPU ağır işleri
+gibi işlemleri yürütür.
+
+Yani:
+
+❌ “Node tamamen tek thread” → Yanlış
+✔ “Node’un JS çalışan kısmı tek thread” → Doğru
+✔ “Arka planda 4 thread’lik gizli havuz var” → Doğru
+
+🌊 Node.js Tek Thread Ne Demek?
+
+JavaScript kodunun çalıştığı kısım tek bir akışta ilerler demektir.
+
+Yani:
+
+console.log("1");
+console.log("2");
+console.log("3");
+
+unları tek bir çalışan işçi sırayla yürütür.
+
+Aynı anda 2 JS fonksiyonu paralel çalışamaz.
+
+📌 Ama peki aynı anda dosya okuyabiliyoruz?
+
+Evet çünkü:
+
+JS thread’i → İşi libuv’ye yolluyor
+
+libuv → kendi thread pool’unda dosyayı okuyor
+
+İş bitince event loop → callback’i sıraya alıyor
+
+JS thread’i sadece “iş bitti” sinyalini alıp callback’i çalıştırıyor.
+
+SONUÇ: Node.js tek thread ama engelli değil
+
+✔ JS çalıştırma → tek thread
+✔ Arka plan ağır işler → libuv thread pool (4 thread)
+✔ Ağ işlemleri → işletim sistemi üzerinden asenkron
+✔ Event loop → işleri sıraya koyar
+✔ Node.js bu yüzden hızlı ve bloklamayan bir sistemdir

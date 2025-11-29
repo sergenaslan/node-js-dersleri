@@ -1,0 +1,6 @@
+🧠 SONUÇ (KİLİT CÜMLE)
+✔ CPU = Ev
+✔ Core = Evdeki soba
+✔ Thread = Sobaya odun atan işçi
+✔ Komut akışı = Odunların sobaya sırayla taşıyan bant
+✔ Hyper-threading = Sobada iki işçinin aynı sobaya hizmet etmesi
